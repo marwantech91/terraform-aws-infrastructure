@@ -274,3 +274,11 @@ output "database_subnet_group_name" {
 output "nat_gateway_ips" {
   value = aws_eip.nat[*].public_ip
 }
+
+output "vpc_cidr_block" {
+  value = aws_vpc.main.cidr_block
+}
+
+output "azs" {
+  value = var.azs
+}
