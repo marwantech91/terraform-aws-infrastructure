@@ -44,6 +44,11 @@ variable "node_max_size" {
 variable "node_desired_size" {
   type    = number
   default = 3
+
+  validation {
+    condition     = var.node_desired_size >= var.node_min_size && var.node_desired_size <= var.node_max_size
+    error_message = "node_desired_size must be between node_min_size and node_max_size."
+  }
 }
 
 variable "fargate_namespaces" {
