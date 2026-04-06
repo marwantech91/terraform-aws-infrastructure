@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [vpc, eks, rds, s3]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.7'
+
+      - name: Terraform Init
+        run: terraform -chdir=modules/${{ matrix.module }} init -backend=false
+
+      - name: Terraform Validate
+        run: terraform -chdir=modules/${{ matrix.module }} validate
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive modules/${{ matrix.module }}
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.7'
+
+      - name: Check formatting
+        run: terraform fmt -check -recursive .
